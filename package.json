@@ -19,6 +19,7 @@
   "homepage": "https://github.com/jjmonte20/privateChatApp#readme",
   "dependencies": {
     "express": "^4.16.4",
+    "mongoose": "^5.4.10",
     "socket.io": "^2.2.0"
   }
 }
