@@ -74,6 +74,7 @@
                     $nickBox.val('');
                 });
 
+                // Whenever socket calls on usernames, it calls on the function with data as an argument to make the data
                 socket.on('usernames', function(data){
                     var html = '';
                     for (let i = 0; i < data.length; i++) {
@@ -82,6 +83,7 @@
                     $users.html(html);
                 })
 
+                // Whenever a user sends a message, the socket will emit send message with the value of the message and call back a function to append the data
                 $messageForm.submit(function(e){
                     e.preventDefault();
                     socket.emit('send message', $messageBox.val(), function(data){
@@ -91,20 +93,26 @@
                     $messageBox.val('');
                 });
 
+                // Whenever socket recieves a new message, it will call displayMsg to input new data
                 socket.on('new message', function(data){
                     displayMsg(data);
                 });
 
+                // Function do display messages
                 function displayMsg(data){
                     $chat.append('<span class="msg"><b>' + data.nick + ": </b>" + data.msg + "</span><br/>");
                 }
 
+                // When socket on the server side whispers, it fires the function to load data from the chat to a specific user
                 socket.on('whisper', function(data){
                     $chat.append('<span class="whisper"><b>' + data.nick + ": </b>" + data.msg + "</span><br/>");
                 });
 
+                // When socket on the server side loads old messages, it fires load old messages from docs
                 socket.on('load old msgs', function(docs){
+                    // going through all of the docs in reverse orders
                     for(let i = docs.length-1; i >= 0; i--) {
+                        // calling displayMsg for every doc in the application
                         displayMsg(docs[i]);
                     }
                 });
