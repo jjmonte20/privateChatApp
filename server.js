@@ -11,13 +11,13 @@ var PORT = process.env.PORT || 3000;
 
 server.listen(PORT);
 
-mongoose.connect('mongodb://localhost/chat', function(err){
-    if (err){
-        console.log(err);
-    } else {
-        console.log("Connected to mongoDB");
-    }
-});
+var databaseUri = 'mongodb://localhost/chat';
+
+if (process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI);
+} else {
+    mongoose.connect(databaseUri);
+}
 
 // chat schema
 var chatSchema = mongoose.Schema({
