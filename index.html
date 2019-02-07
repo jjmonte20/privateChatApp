@@ -6,24 +6,74 @@
             #chat{
                 height: 500px
             }
+            #contentWrap{
+                display: none;
+            }
+            #chatWrap{
+                float: left;
+                border: 1px #000 solid;
+            }
         </style>
     </head>
     <body>
-        <div id="chat">
-
+        <div id="nickWrap">
+            <p>Enter a username:</p>
+            <form id="setNick">
+                <p id="nickErr"></p>
+                <input size="35" id="nickname"></input>
+                <input type="submit"></submit>
+            </form>
         </div>
-        <form id="send-message">
-            <input size="35" id="message"></input>
-            <input type="submit"></input>
-        </form>
+        <div id="contentWrap">
+            <!-- chat content here -->
+            <div id="chatWrap">
+                <div id="chat">
+                </div>
+                <form id="send-message">
+                    <input size="35" id="message"></input>
+                    <input type="submit"></input>
+                </form>
+            </div>
+            <!-- users here -->
+            <div id="users">
+
+            </div>
+        </div>
+
+        <!-- Scripts here -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             jQuery(function($){
                 var socket = io.connect();
+                var $nickForm = $('#setNick');
+                var $nickErr = $('#nickErr');
+                var $nickBox = $('#nickname');
+                var $users = $('#users');
                 var $messageForm = $('#send-message');
                 var $messageBox = $('#message');
                 var $chat = $('#chat');
+
+                $nickForm.submit(function(e){
+                    e.preventDefault();
+                    socket.emit('new user', $nickBox.val(), function(data){
+                        if (data) {
+                            $('#nickWrap').hide();
+                            $('#contentWrap').show();
+                        } else {
+                            $nickErr.html('That username is taken, please try again');
+                        }
+                    });
+                    $nickBox.val('');
+                });
+
+                socket.on('usernames', function(data){
+                    var html = '';
+                    for (let i = 0; i < data.length; i++) {
+                        html += data[i] + '<br/>'
+                    }
+                    $users.html(html);
+                })
 
                 $messageForm.submit(function(e){
                     e.preventDefault();
