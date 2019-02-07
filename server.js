@@ -2,11 +2,14 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+
 var users = {};
 
 var PORT = process.env.PORT || 3000;
 
 server.listen(PORT);
+
+
 
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/index.html");
@@ -35,7 +38,7 @@ io.sockets.on('connection', function(socket){
                 var msg = msg.substring(ind + 1);
                 if (name in users) {
                     users[name].emit('whisper', { msg: msg, nick: socket.nickname })
-                    console.log('whisper');
+                    // console.log('whisper');
                 } else {
                     callback('error: enter a valid user');
                 }
