@@ -78,6 +78,7 @@
                 $messageForm.submit(function(e){
                     e.preventDefault();
                     socket.emit('send message', $messageBox.val());
+                    // add stuff later
                     $messageBox.val('');
                 });
 
